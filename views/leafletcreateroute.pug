@@ -1,0 +1,20 @@
+extends leaflet
+
+block routeoptions
+  
+  form(method="POST" action="/routes/addroute")
+    #form-group
+      label Date:
+      input.form-control(name="date", type="text")
+      label Starttime:
+      input.form-control(name="starttime", type="text")
+      label Endtime:
+      input.form-control(name="endtime", type="text")
+      label Route:
+      input.form-control(name="waypoints", type="text")
+    input.btn.btn-primary(type='submit', value='Submit')
+  script(src="/createroutesLeafletjs")
+      
+  //-  <div class="input-group date">
+    //-    <input type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+    //-  </div>

@@ -1,0 +1,53 @@
+doctype html
+html
+  heads
+    title= title
+    //- 
+    //- width=device-width, initial-scale=1, shrink-to-fit=no
+    .meta(name="viewport", content="width=device-width, initial-scale=1.0, shrink-to-fit=no")
+    link(rel='stylesheet', href='/bootstrap/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/leaflet/leaflet.css')
+    script(src="/jquery/jquery.js")
+    script(src="/bootstrap/js/bootstrap.js")
+  body
+    block navbar
+      .container-fluid
+        nav.navbar.navbar-expand-lg.navbar-light.bg-light(style="background-color: #e3f2fd;")
+          a.navbar-brand(href='#') Navigation
+          button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarNav' aria-controls='navbarNav' aria-expanded='false' aria-label='Toggle navigation')
+            span.navbar-toggler-icon
+          #navbarNav.collapse.navbar-collapse
+            ul.navbar-nav.float-left
+              li.nav-item
+                a.nav-link(href='/') Home
+              li.nav-item
+                a.nav-link(href='/meetings') Meetings
+              li.nav-item.float-right
+                if user != null
+                  li.nav-item.dropdown 
+                    a.nav-link.dropdown-toggle(role="button", data-toggle="dropdown", aria-haspopup="true", aria-expanded="false", href="#") Routes
+                    div.dropdown-menu(aria-labelledby="navbarDropdown")
+                        a.dropdown-item(href='/routes/createroute') create
+                        a.dropdown-item(href='/routes/administrateroute') administrate
+                  li.nav-item
+                    form(method="GET" action="/users/logoutuser")
+                      #form-group
+                        input.btn.btn-primary(type='submit', formmethod="get", value='Logout')
+                else
+                  li.nav-item
+                    a.nav-link(href='/users/login') Login
+                  li.nav-item
+                    a.nav-link(href='/users/register') Register
+      
+    br
+    block sucmessage
+    block errmessage
+    br
+    br
+    block content
+    br
+    hr
+    footer
+      p Impressum or somthing?
+    
+  

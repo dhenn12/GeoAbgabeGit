@@ -1,0 +1,35 @@
+{
+  "name": "geoabgabe",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "bootstrap": "^4.3.1",
+    "connect-flash": "^0.1.1",
+    "cookie-session": "^1.3.3",
+    "express": "^4.17.1",
+    "express-session": "^1.16.2",
+    "jquery": "^3.4.1",
+    "leaflet": "^1.5.1",
+    "mongodb": "^3.3.0",
+    "mongoose": "^5.6.11",
+    "popper.js": "^1.15.0",
+    "processenv": "^1.1.0",
+    "pug": "^2.0.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dhenn12/GeoAbgabe.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dhenn12/GeoAbgabe/issues"
+  },
+  "homepage": "https://github.com/dhenn12/GeoAbgabe#readme"
+}

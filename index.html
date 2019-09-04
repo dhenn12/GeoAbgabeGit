@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  <title>express test</title>
+</head>
+<body>
+  <h1>express test</h1>
+   <input name="firstname" type="text">
+   <a href="http://google.com" class="button">Go to Google</a>
+    <button type="button" onclick="alert('Hello World!')">Click Me!</button>
+  <div id="content"></div>
+
+
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h1>Add user (No doublename allowed)</h1>
+
+  <form action="users/create" method="POST" >
+    Name:<br />
+    <input type="text" name="name" />
+    <br>
+
+    <br />
+    <input type="submit" value="send" />
+  </form>
+
+
+  <h1>login</h1>
+  <form action="users/login" method="GET" >
+    Name:<br />
+    <input type="text" name="name" />
+    <br>
+
+
+    <br />
+    <input type="submit" value="send" />
+  </form>
+
+  <br />
+
+</body>
+</html>
