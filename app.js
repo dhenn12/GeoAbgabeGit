@@ -10,10 +10,13 @@
  * _jquery
  * _leaflet
  * _popper
+ * //_cors
  * //_connect-flash -->https://www.npmjs.com/package/connect-flash
  * _express-session -->https://www.npmjs.com/package/express-session
  * //_cookie-session --> https://expressjs.com/en/resources/middleware/cookie-session.html
  * _body-parser --> https://www.npmjs.com/package/body-parser
+ * _request --> https://www.npmjs.com/package/request
+ * _ pickerjs --> https://www.npmjs.com/package/pickerjs
  */
 
  // install mongodb; optionally install mongo client
@@ -41,13 +44,13 @@ const http = require('http');
 const port =  3000;
 
 
-
 // express reqiure
 const express = require('express');
 
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const request = require("request");
 
 //initialize mongoose connection
 mongoose.connect('mongodb://localhost:27017/mydb', {useNewUrlParser: true});
@@ -69,6 +72,13 @@ var User = require("./modelclasses/users");
 //const pug = require('pug');
 //set vieww
 app.set("view engine", "pug");
+
+
+//
+
+
+//"http://api.openweathermap.org/data/2.5/weather?lat=52&lon=8&APPID=49e63892630375f074577a227926d976"
+
 
 app.use(express.json());
 // for parsing application/json
@@ -93,17 +103,27 @@ app.use("/leaflet", express.static(__dirname + "/node_modules/leaflet/dist"));
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist'));
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist'));
 app.use('/popper', express.static(__dirname + '/node_modules/popper.js/dist'));
-
+app.use('/pickerjs', express.static(__dirname + '/node_modules/pickerjs/dist'));
 
 //get the scripts
 app.use("/routesLeafletjs", express.static(__dirname + '/scripts/routesLeaflet.js'))
 app.use("/createroutesLeafletjs", express.static(__dirname + '/scripts/createrouteleaflet.js'))
-
 // set the options for session user!
 app.get('*', function(req, res, next){
   console.log('requested  username =  ' + req.session.user);
+
+  //get weahter of a point
+  request("http://api.openweathermap.org/data/2.5/weather?lat=52&lon=8&APPID=49e63892630375f074577a227926d976", function(error, response, body){
+
+    console.log('error:', error); // Print the error if one occurred
+    console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+    console.log('body:', body); // Print the HTML for the Google homepage
+  });
+
+
   res.locals.user = req.session.user || null;
   res.locals.userroutes = req.session.routes || null;
+  res.locals.weather = null;
   //res.locals.userroutes = req.session.routes || null;
   console.log('res.locals.user =  ' + app.locals.user);
 
@@ -113,7 +133,6 @@ app.get('*', function(req, res, next){
         console.log('res.locals.userroutes =  ' + res.locals.userroutes.length);
       });
 
-    console.log('res.locals.userroutesdddddddddddddddddd =  ' + res.locals.userroutes[0].waypoints);
   }
 
   console.log('req.method:  ' + req.method + ' | req path: ' +  req.path + ' | req.params: ' + req.params);

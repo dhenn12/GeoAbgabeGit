@@ -19,16 +19,19 @@ var administrateroute = function(req, res, next){
   res.render("leafletadministrateroute");
 };
 
+
+
+
 var addRoute = function(req, res, next){
   //create new RouteObj
   let newRoute = new Route();
   newRoute.user = req.session.user;
-  newRoute.date = req.body.date;
+  
   newRoute.starttime = req.body.starttime;
   newRoute.endtime = req.body.endtime;
   newRoute.waypoints = req.body.waypoints;
   newRoute.shared = null;
-
+  console.log(req.session.routes);
   //adding the route for the current session
   req.session.routes.push(newRoute);
   console.log("route was submit or not  " + req.session.user);
@@ -49,8 +52,7 @@ var shareRoute = function(req, res, next){
   User.findOne({ name: req.session.user }, function (err, user) {
     let newRoute = new Route();
     newRoute.user = user.name;
-    console.log("IMPIMPIMPIMPIMP " + user.routes[req.params.number].date);
-    newRoute.date = user.routes[req.params.number].date;
+    console.log("IMPIMPIMPIMPIMP " + user.routes[req.params.number].starttime);
     newRoute.starttime = user.routes[req.params.number].starttime;
     newRoute.endtime = user.routes[req.params.number].endtime;
     newRoute.waypoints = user.routes[req.params.number].waypoints;
@@ -82,7 +84,7 @@ var deleteRoute = function(req, res, next) {
 
 
 var showRoute = function(req, res, next){
-  LeafletScript.createRoute("mapdiv", req.session.routes[req.params.number]);
+  //LeafletScript.createRoute("mapdiv", req.session.routes[req.params.number]);
 };
 
 router.get("/showroute/:number", showRoute)

@@ -5,9 +5,6 @@ let routeSchema = mongoose.Schema({
   user:{
     type: String
   },
-  date:{
-    type: String
-  },
   starttime:{
     type: String
   },

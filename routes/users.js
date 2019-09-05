@@ -50,8 +50,12 @@ var loginUser = function(req, res, next) {
       res.render("loginErr", { error_message: " non existing username" });
     } else{
       req.session.user = user.name;
-      req.session.routes = user.routes;
-      req.session.routeslength = user.__v;
+      if(user.routes != null){
+        req.session.routes = user.routes;
+      } else {
+        req.session.routes = [];
+      }
+      req.session.routeslength = req.session.routes.length; 
       console.log("req.session.user in loginUser: " + req.session.routeslength);
       res.redirect("/");
       //next();
