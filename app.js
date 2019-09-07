@@ -53,7 +53,9 @@ const mongoose = require('mongoose');
 const request = require("request");
 
 //initialize mongoose connection
+//WARNING: 'mongodb://localhost:27017/mydb' was changed to 'mongodb://mongo:27017/mydb' in order to allow docker to work. may not work without docker now
 mongoose.connect('mongodb://mongo:27017/mydb', {useNewUrlParser: true});
+
 let db = mongoose.connection;
 
 // check for connections
