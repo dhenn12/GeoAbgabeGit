@@ -25,25 +25,40 @@ var administrateroute = function(req, res, next){
 var addRoute = function(req, res, next){
   //create new RouteObj
   let newRoute = new Route();
-  newRoute.user = req.session.user;
-  
-  newRoute.starttime = req.body.starttime;
-  newRoute.endtime = req.body.endtime;
-  newRoute.waypoints = req.body.waypoints;
-  newRoute.shared = null;
-  console.log(req.session.routes);
-  //adding the route for the current session
-  req.session.routes.push(newRoute);
-  console.log("route was submit or not  " + req.session.user);
+  var inputRoute = false;
 
-  //save the route in the db for later uses for example after login or reload
-  User.findOne({ name: req.session.user }, function (err, user) {
-    user.routes.push(newRoute);
-    console.log(user.routes.length);
-    user.save(function(err){});
-    req.session.routes = user.routes;
-  });
-  res.redirect("/routes/administrateroute");
+  //check user input
+  try{
+    inputRoute = parseArrayString(req.body.waypoints);
+  } catch(err) {
+    //the error that is thrown by the function that is looking at the input. can be useful for logs
+    console.log(err);
+  }
+  if(inputRoute != false){
+    newRoute.user = req.session.user;
+
+    newRoute.starttime = req.body.starttime;
+    newRoute.endtime = req.body.endtime;
+    newRoute.waypoints = inputRoute;
+    newRoute.shared = null;
+    console.log(req.session.routes);
+    //adding the route for the current session
+    req.session.routes.push(newRoute);
+    console.log("route was submit or not  " + req.session.user);
+
+    //save the route in the db for later uses for example after login or reload
+    User.findOne({ name: req.session.user }, function (err, user) {
+      user.routes.push(newRoute);
+      console.log(user.routes.length);
+      user.save(function(err){});
+      req.session.routes = user.routes;
+    });
+    res.redirect("/routes/administrateroute");
+  } else {
+    console.log("route not valid");
+    //This client alert can use some polishing
+    return res.status(401).end('route is not valid. please enter your route in the format: [[lon1,lat1],[lon2,lat2],...,[lonn, latn]]');
+  }
 };
 
 
@@ -87,7 +102,55 @@ var showRoute = function(req, res, next){
   //LeafletScript.createRoute("mapdiv", req.session.routes[req.params.number]);
 };
 
-router.get("/showroute/:number", showRoute)
+/**
+* @function parseArrayString
+* @desc parses a string and checks whether it contains a 2-dimensional array of coordinates.
+* To be used to examine user input. throws an error if it doesn't contain an array of coordinates like specified.
+* If the string contains several coordinate array it only returns the first one.
+* @param inputString the string that represents a 2-dimensional array to be parsed. formatting: [[lon,lat], ... ,[lon,lat]]
+* @returns array of coordinates if this is what the string represents. exception if otherwise
+* @author fnieb02@gmail.com
+*/
+function parseArrayString(inputString){
+  function CustomError( message ) {
+    this.message = message;
+  }
+  //first, match only the text between the square brackets
+  inputString = inputString.match(/\[\[.*?\]\]/);
+
+  //the array of strings to look for that can't be included in the input, to prevent any possible injection.
+  var cantInclude = [",","\"","\'",")","(","$","\\","/","!"];
+  //foreign code,
+  if(inputString == "" || inputString == null){
+    throw new Error("input string contains no 2d array");
+  }
+  //check for illegal characters. function call based on https://stackoverflow.com/a/43615512 by user "dinigo"
+  else if (cantInclude.some(function(el){inputString.includes(el);})){
+    throw new Error("input string contains illegal characters");
+  }
+  //everything is okay. use JSON.parse
+  else {
+    var outputArray = JSON.parse(inputString);
+    //now check if every sub-array is 2 elements and numbers
+    if(function(){
+      return outputArray.forEach(
+        //for every sub-array...
+        function(subArray){
+          //check length of each string
+          if(subArray.length != 2) return false;
+          //check if they all contain numbers
+          if(subArray.some(isNAN)) return false;
+        }
+      );
+      //return true if none of the cases above are the case.
+      return true;}) {
+      //return the array. it is clean
+    return(outputArray);
+    } else {throw new Error("input String does not contain 2d-array containing numbers");}
+  }
+}
+
+router.get("/showroute/:number", showRoute);
 router.get("/deleteroute/:number", deleteRoute);
 router.get("/shareroute/:number", shareRoute);
 router.post("/addroute", addRoute);
