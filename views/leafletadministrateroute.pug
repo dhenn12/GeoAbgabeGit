@@ -1,0 +1,21 @@
+extends leaflet
+
+block routeoptions
+  if userroutes != null
+  - var values = userroutes;
+  - var counter = 0;
+  if values != null
+    ul.list-group
+      each val in values
+        li.list-group-item=  " Starttime:  " + val.starttime + "   Endtime: " + val.endtime + "   Route: " + val.waypoints
+          br
+          br
+          - var z = JSON.stringify(values[counter].waypoints);
+          a.btn.btn-primary.btn-md.active(type="submit", href="/routes/deleteroute/" + counter) DELETE
+          a.btn.btn-primary.btn-md.active(type="submit", href="/routes/showroute/" + counter) Show Route
+          button.btn-primary.btn-md.active(onclick='createRoute("mapdiv", ' + z + ')') Clickme
+          a.btn.btn-primary.btn-md.active(type="submit", href="/routes/shareroute/" + counter) Share Route
+          - counter++
+  else
+    - var values = userroutes;
+    div we are in trouble
