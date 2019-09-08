@@ -10,7 +10,11 @@ var Route = require("../modelclasses/routes");
 var User = require("../modelclasses/users");
 var Encounter = require("../modelclasses/encounter");
 const Intersect = require('@turf/line-intersect');
+const turf = require('@turf/turf');
 //var Segment = require('../node_modules/@turf/line-segment');
+
+//geoJSON template to be used when there is a geoJSON to create
+const geoJSONtemplate = '{ "type": "FeatureCollection", "features": [{"type": "Feature","properties": {},"geometry": {"type": "LineString","coordinates": []}}]}';
 
 /* GET users listing. */
 router.get("/createroute", function(req, res, next) {
@@ -157,13 +161,31 @@ var addRoute = function(req, res, next){
       user.save(function(err){});
       req.session.routes = user.routes;
     });
-    
+
     //search routes and look if there is an encounter?
     Route.find({}, function (err, routes) {
 
+      console.log(routes)
+
+      //prepare newRoute data to be used with findEncounter
+      let newrouteGeoJSON = JSON.parse(geoJSONtemplate);
+      newrouteGeoJSON.features[0].geometry.coordinates = JSON.parse(newRoute.waypoints[0]);
+
       for(var z = 0; z < routes.length; z++){
         console.log("newRouteWaypoints" + routes[z].waypoints + " routesz waypoints :    " +   routes[z].waypoints.length);
-        var encPoints = intersections(newRoute.waypoints,  routes[z].waypoints);
+        //var encPoints = intersections(newRoute.waypoints,  routes[z].waypoints);
+
+        //prepare routeZ data to be used with findEncounter
+        let routeZGeoJSON = JSON.parse(geoJSONtemplate);
+        routeZGeoJSON.features[0].geometry.coordinates = JSON.parse(routes[z].waypoints[0]);
+        console.log(JSON.parse(routes[z].waypoints[0]))
+
+        var encounter = findEncounter(newrouteGeoJSON, routeZGeoJSON, 500);
+        console.log(encounter)
+        var encPoints = encounter.intersects.features;
+        console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+        console.log(encPoints)
+
         console.log("Intersection Points :::  " + encPoints);
         if(encPoints.length > 0){
           for(var c= 0; c < encPoints.length; c++){
@@ -186,24 +208,6 @@ var addRoute = function(req, res, next){
 
 };
 
-/*
-function intersec(array1, array2){
-  var intersectionPoints = [];
-  console.log("in intersections array1: " + array1  + "   array2: " + array2);
-  for(var i = 0; i < (array1.length - 1); i++){
-    console.log("in intersections for1");
-    for(var j = 0; j < (array2.length - 1); j++){
-      //var line1 = Intersect.lineString(array1[i]);
-      //var line2 = Intersect.lineString(array2[j]);
-      //var intersects = Intersect.lineIntersect(array1[i], array2[j]);
-      var intersects = Intersect(array1[i], array2[j]);
-      console.log("mkdmofdsmkofdmsofsm + " + intersects);
-      if(intersects != 0){
-        intersectionPoints.push(intersects);
-        }
-    }
-  }
-}*/
 var shareRoute = function(req, res, next){
   console.log("IMPIMPIMPIMPIMP21321 " + req.params.number);
   User.findOne({ name: req.session.user }, function (err, user) {
@@ -296,6 +300,73 @@ function parseArrayString(inputString){
     return(outputArray);
     } else {throw new Error("input String does not contain 2d-array containing numbers");}
   }
+}
+
+/**
+* @function findEncounter
+* @desc function to find the encounter between two routes
+* routes should both contain metadata regarding the user/animal as well as start- and end-time for each route
+* @param route1 GeoJSON FEATURE, representing route1.
+* @param route2 GeoJSON FEATURE, representing route2.
+* @param tolerance maximum distance in meters that can still count as an encounter
+* @returns an objec that contains the two points closest to each other as well as their distance
+*/
+function findEncounter(route1, route2, tolerance){
+  route1 = route1.features[0];
+  route2 = route2.features[0];
+  var closestEncounter = {};
+
+  //initialise the object
+  closestEncounter.intersects = null;
+  closestEncounter.dist = null;
+  closestEncounter.point1 = null;
+  closestEncounter.point2 = null;
+  closestEncounter.dist = Number.MAX_SAFE_INTEGER;
+  //var dist;
+
+  //find intersections
+  closestEncounter.intersects = turf.lineIntersect(route1,route2);
+
+  //check distance of every point of line1 to line2
+  for(let i = 0; i < route1.geometry.coordinates.length; i++){
+    let route1Point = turf.point(route1.geometry.coordinates[i]);
+    let distance = turf.pointToLineDistance(route1Point, route2, {units: 'meters'});
+
+    if(distance < closestEncounter.dist){
+      closestEncounter.point1 = route1Point;
+      closestEncounter.point2 = turf.nearestPointOnLine(route2, route1Point, {units: 'meters'});
+      closestEncounter.dist = distance;
+      console.log(distance)
+    }
+  }
+  //to be sure we got the closest one, do the same for every point in line 2
+  for(let i = 0; i < route2.geometry.coordinates.length; i++){
+    let route2Point = turf.point(route2.geometry.coordinates[i]);
+    let distance = turf.pointToLineDistance(route2Point, route1, {units: 'meters'});
+
+    if(distance < closestEncounter.dist){
+      closestEncounter.point1 = route2Point;
+      closestEncounter.point2 = turf.nearestPointOnLine(route1, route2Point, {units: 'meters'});
+      closestEncounter.dist = distance;
+      console.log(distance);
+    }
+  }
+
+  //if there are no points close enought to each other, there is no closest encounter
+  if(closestEncounter.dist > tolerance){
+    closestEncounter.dist = null;
+  }
+  //if there is an intersection, the distance is obviously 0 (elevation not counting)
+  if(closestEncounter.intersects.features.length > 0){
+    closestEncounter.dist = 0;
+  }
+  //if there is no closestEncounter, no points are there either
+  if(closestEncounter.dist == null){
+    closestEncounter.point1 = null;
+    closestEncounter.point2 = null;
+  }
+
+  return closestEncounter;
 }
 
 router.get("/showroute/:number", showRoute);

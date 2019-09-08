@@ -60,14 +60,12 @@ L.DomEvent.on(destBtn, 'click', function() {
 * BE SURE TO HAVE A GLOBAL VARIABLE shapes DECLARED AS AN ARRAY
 * @param map the map id of the map
 * @param inputCoords the GeoJSON of the shape to be added to the map
-* //TODO: add popup support
 * @author f_nieb02@uni-muenster.de
 */
-
 function createRoute(mapdiv, inputCoords){
   var id;
   var geoJSON = JSON.parse(geoJSONtemplate);
-  console.dir(inputCoords)
+  inputCoords = JSON.parse(inputCoords);
   //parse the stringified array from mongoose once again...
   //inputCoords = JSON.parse(inputCoords)
   geoJSON.features[0].geometry.coordinates = inputCoords;
@@ -76,12 +74,8 @@ function createRoute(mapdiv, inputCoords){
   if (shapes.length < 1) id = 0;
   else id = shapes.length;
 
-
-  var newRoute = new L.polyline(array);
   //create a leaflet object from the given coordinates and colors
   var newRoute = new L.GeoJSON(geoJSON);
-
-
   newRoute._id = id;
 
   //add the shape to the map and the shape array.
@@ -89,30 +83,6 @@ function createRoute(mapdiv, inputCoords){
   shapes.push(newRoute);
 }
 
-function intersections(array1, array2){
-  var intersectionPoints = [];
-  for(var i = 0; i < array1.length - 2; i++){
-    var lat1 = array[i][0];
-    var lng1 = array[i][1];
-    var lat11 = array[i + 1][0];
-    var lng11 = array[i + 1][1];
-    for(var j = 0; j < array2.length - 2; i++){
-      var lat2 = array[j][0];
-      var lng2 = array[j][1];
-      var lat22 = array[j + 1][0];
-      var lng22 = array[j + 1][1];
-      if(!(lat1 < lat2 && lat1 < lat22 && lat11 < lat2 && lat11 < lat22) || !(lat1 > lat2 && lat1 > lat22 && lat11 > lat2 && lat11 > lat22)){
-        if(!(lng1 < lng2 && lng1 < lng22 && lng11 < lng2 && lng11 < lng22) || !(lng1 > lng2 && lng1 > lng22 && lng11 > lng2 && lng11 > lng22)){
-          if(lat1 > lat2){
-
-          }else if(lng1 > lng2){
-
-          }
-        }
-      }
-    }
-  }
-}
 /**
 * @function displayUserMap
 * @desc gets called when the form updates and displays the entered geoJSON in the map
@@ -135,7 +105,6 @@ function displayUserMap(){
   }
 }
 
-
 /**
 * @function removeShape
 * @desc function to remove a given shape object from a given map
@@ -148,78 +117,6 @@ function removeShape(map, id){
     else new_shapes.push(shape);
   });
   shapes = new_shapes;
-}
-
-/**
-* @function findEncounter
-* @desc function to find the encounter between two routes
-* routes should both contain metadata regarding the user/animal as well as start- and end-time for each route
-* @param route1 GeoJSON FEATURE, representing route1.
-* @param route2 GeoJSON FEATURE, representing route2.
-* @param tolerance maximum distance in meters that can still count as an encounter
-* @returns an objec that contains the two points closest to each other as well as their distance
-*@author f_nieb02@uni-muenster.de
-*/
-function findEncounter(route1, route2, tolerance){
-  var closestEncounter = {};
-  closestEncounter.dist = Number.MAX_SAFE_INTEGER;
-
-  var route1Point;
-  var route2Point;
-  var dist;
-
-  for(var i = 0; i < route1.geometry.coordinates.length; i++){
-    route1Point = route1.geometry.coordinates[i];
-
-    for(var j = 0; j < route2.geometry.coordinates.length; j++){
-      route2Point = route2.geometry.coordinates[j];
-      dist = twoPointDistance(route1Point, route2Point);
-      if(dist < closestEncounter.dist){
-        closestEncounter.dist = dist;
-        closestEncounter.point1 = route1Point;
-        closestEncounter.point2 = route2Point;
-      }
-    }
-  }
-
-  if(closestEncounter.dist > tolerance){
-    console.log("chrip")
-    closestEncounter.dist = null;
-    closestEncounter.point1 = null;
-    closestEncounter.point2 = null;
-  }
-
-  return closestEncounter;
-}
-
-/**
-* @function twoPointDistance
-* @desc takes two geographic points and returns the distance between them. Uses the Haversine formula (http://www.movable-type.co.uk/scripts/latlong.html, https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula)
-* @returns the distance between 2 points on the surface of a sphere with earth's radius
-*/
-function twoPointDistance(start, end){
-  var earthRadius = 6371e3; //Radius
-  var phi1        = toRadians(start[0]); //latitude at starting point. in radians.
-  var phi2        = toRadians(end[0]); //latitude at end-point. in radians.
-  var deltaLat    = toRadians(end[0]-start[0]); //difference in latitude at start- and end-point. in radians.
-  var deltaLong   = toRadians(end[1]-start[1]); //difference in longitude at start- and end-point. in radians.
-
-  var a = Math.sin(deltaLat/2)*Math.sin(deltaLat/2) + Math.cos(phi1)*Math.cos(phi2)*Math.sin(deltaLong/2)*Math.sin(deltaLong/2);
-  var c = 2 * Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-  var distance = earthRadius*c;
-
-  return distance;
-}
-
-/**
-* @function toRadians
-* @desc helping function, takes degrees and converts them to radians
-* @param degrees number value that represents an angle in degrees
-* @returns number value that represents an angle in radians.
-*/
-function toRadians(degrees){
-  var pi = Math.PI;
-  return degrees * (pi/180);
 }
 
 /**
