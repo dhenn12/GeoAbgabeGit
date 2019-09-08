@@ -10,6 +10,9 @@ console.log("height = " + mapheight + " width = " + mapwidth);
 console.log($( "#map" )[0].innerHTML);
 
 */
+
+const geoJSONtemplate = '{ "type": "FeatureCollection", "features": [{"type": "Feature","properties": {},"geometry": {"type": "LineString","coordinates": []}}]}';
+
 const start_latlng = [52, 9];
 //var mapsec = $( "#mapdiv" )[0]
 var map = L.map(mapdiv, {
@@ -17,6 +20,8 @@ var map = L.map(mapdiv, {
   zoom: 12
 });
 
+//var shapes, used to keep track of the shapes on the map with their IDs
+var shapes = [];
 
 var osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 13,
@@ -38,26 +43,33 @@ L.control.layers(baseMaps).addTo(map);
 * @function createRoute
 * @desc function that adds a given shape to the map.
 * leaning on https://stackoverflow.com/questions/45931963/leaflet-remove-specific-marker
+* BE SURE TO HAVE A GLOBAL VARIABLE shapes DECLARED AS AN ARRAY
 * @param map the map id of the map
-* @param shape the GeoJSON of the shape to be added to the map
+* @param inputCoords the GeoJSON of the shape to be added to the map
 * //TODO: add popup support
 * @author f_nieb02@uni-muenster.de
 */
-function createRoute(mapdiv, shape){
+function createRoute(mapdiv, inputCoords){
   var id;
-  var inputCoords = [];
+  var geoJSON = JSON.parse(geoJSONtemplate);
+  console.dir(inputCoords)
+  //parse the stringified array from mongoose once again...
+  //inputCoords = JSON.parse(inputCoords)
+  geoJSON.features[0].geometry.coordinates = inputCoords;
 
   //choose a fitting id for the current shape
-  if (shape.length < 1) id = 0;
-  else id = 7;
+  if (shapes.length < 1) id = 0;
+  else id = shapes.length;
 
   //create a leaflet object from the given coordinates and colors
-  var newRoute = new L.GeoJSON(shape)
+  console.dir(geoJSON);
+  console.log(geoJSON);
+  var newRoute = new L.GeoJSON(geoJSON);
   newRoute._id = id;
-  //var map = L.map(mapdiv);
+
   //add the shape to the map and the shape array.
   map.addLayer(newRoute);
-  //shape.push(newRoute);
+  shapes.push(newRoute);
 }
 
 /**

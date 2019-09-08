@@ -34,17 +34,19 @@ var addRoute = function(req, res, next){
     //the error that is thrown by the function that is looking at the input. can be useful for logs
     console.log(err);
   }
+
+
   if(inputRoute != false){
     newRoute.user = req.session.user;
 
     newRoute.starttime = req.body.starttime;
     newRoute.endtime = req.body.endtime;
-    newRoute.waypoints = inputRoute;
+    //stringify the route becuase mongoose doesn't support 2d-arrays
+    newRoute.waypoints = JSON.stringify(inputRoute);
     newRoute.shared = null;
     console.log(req.session.routes);
     //adding the route for the current session
     req.session.routes.push(newRoute);
-    console.log("route was submit or not  " + req.session.user);
 
     //save the route in the db for later uses for example after login or reload
     User.findOne({ name: req.session.user }, function (err, user) {
