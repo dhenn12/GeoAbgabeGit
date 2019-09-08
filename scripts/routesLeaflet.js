@@ -39,6 +39,20 @@ var baseMaps = {
 L.control.layers(baseMaps).addTo(map);
 
 
+
+
+
+/*
+L.DomEvent.on(startBtn, 'click', function() {
+       control.spliceWaypoints(0, 1, e.latlng);
+       map1.closePopup();
+   });
+
+L.DomEvent.on(destBtn, 'click', function() {
+    control.spliceWaypoints(control.getWaypoints().length - 1, 1, e.latlng);
+    map1.closePopup();
+  });
+  */
 /**
 * @function createRoute
 * @desc function that adds a given shape to the map.
@@ -49,6 +63,7 @@ L.control.layers(baseMaps).addTo(map);
 * //TODO: add popup support
 * @author f_nieb02@uni-muenster.de
 */
+
 function createRoute(mapdiv, inputCoords){
   var id;
   var geoJSON = JSON.parse(geoJSONtemplate);
@@ -61,10 +76,12 @@ function createRoute(mapdiv, inputCoords){
   if (shapes.length < 1) id = 0;
   else id = shapes.length;
 
+
+  var newRoute = new L.polyline(array);
   //create a leaflet object from the given coordinates and colors
-  console.dir(geoJSON);
-  console.log(geoJSON);
   var newRoute = new L.GeoJSON(geoJSON);
+
+
   newRoute._id = id;
 
   //add the shape to the map and the shape array.
@@ -72,6 +89,30 @@ function createRoute(mapdiv, inputCoords){
   shapes.push(newRoute);
 }
 
+function intersections(array1, array2){
+  var intersectionPoints = [];
+  for(var i = 0; i < array1.length - 2; i++){
+    var lat1 = array[i][0];
+    var lng1 = array[i][1];
+    var lat11 = array[i + 1][0];
+    var lng11 = array[i + 1][1];
+    for(var j = 0; j < array2.length - 2; i++){
+      var lat2 = array[j][0];
+      var lng2 = array[j][1];
+      var lat22 = array[j + 1][0];
+      var lng22 = array[j + 1][1];
+      if(!(lat1 < lat2 && lat1 < lat22 && lat11 < lat2 && lat11 < lat22) || !(lat1 > lat2 && lat1 > lat22 && lat11 > lat2 && lat11 > lat22)){
+        if(!(lng1 < lng2 && lng1 < lng22 && lng11 < lng2 && lng11 < lng22) || !(lng1 > lng2 && lng1 > lng22 && lng11 > lng2 && lng11 > lng22)){
+          if(lat1 > lat2){
+
+          }else if(lng1 > lng2){
+
+          }
+        }
+      }
+    }
+  }
+}
 /**
 * @function displayUserMap
 * @desc gets called when the form updates and displays the entered geoJSON in the map
@@ -93,6 +134,7 @@ function displayUserMap(){
     //and pretend nothing happened
   }
 }
+
 
 /**
 * @function removeShape

@@ -12,7 +12,7 @@ let routeSchema = mongoose.Schema({
     type: String
   },
   waypoints:{
-    type: String
+    type: Array
   },
   shared:{
     type: String
