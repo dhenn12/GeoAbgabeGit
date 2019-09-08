@@ -1,0 +1,14 @@
+extends leaflet
+
+block meetings
+  if user != null
+    form(method="POST" action="#")
+      #form-group
+        label Meetup with:
+        input.form-control(name="user_name", type="text")
+        label When:
+        input.form-control(name="time", type="text")
+        label Where:
+        input.form-control(name="place", type="text")
+            
+      input.btn.btn-primary(type='submit', value='Submit')

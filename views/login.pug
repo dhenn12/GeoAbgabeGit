@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  h1= login
+  form(method="POST" action="/users/loginuser")
+    #form-group
+      label Name:
+      input.form-control(name="user_name", type="text")
+    input.btn.btn-primary(type='submit', value='Submit')

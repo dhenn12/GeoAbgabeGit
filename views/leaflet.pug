@@ -1,0 +1,23 @@
+extends layout
+
+block content
+  script(src="/leaflet/leaflet.js")
+  script(src="/popper/umd/popper.js")
+  script(src="/pickerjs/picker.js")
+  link(rel='stylesheet', href='/pickerjs/picker.css')
+      
+  script(src="/leaflet/leaflet.js")
+  //- div(id="mapdiv", style={height: "400px", width: "600px"})
+  //- div(id='mapdiv', style: width: "400px", height: "400px")
+  .container-fluid
+    .row
+      .col-sm-7
+        div(id="mapdiv", style={height: "500px"})
+      .col-sm-3 
+        block routeoptions 
+        block meetings
+  script(src="/routesLeafletjs")
+      
+      
+
+    
