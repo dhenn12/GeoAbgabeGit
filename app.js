@@ -17,6 +17,9 @@
  * _body-parser --> https://www.npmjs.com/package/body-parser
  * _request --> https://www.npmjs.com/package/request
  * _ pickerjs --> https://www.npmjs.com/package/pickerjs
+ * _leaflet-routing-machine https://www.liedman.net/leaflet-routing-machine/
+ * _@turf/line-intersect --> https://www.npmjs.com/package/@turf/line-intersect
+ @ _@turf/turf --> https://www.npmjs.com/package/@turf/turf
  */
 
  // install mongodb; optionally install mongo client
@@ -51,7 +54,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const request = require("request");
-
+//const turf = require('@turf');
 //initialize mongoose connection
 mongoose.connect('mongodb://localhost:27017/mydb', {useNewUrlParser: true});
 let db = mongoose.connection;
@@ -69,6 +72,7 @@ db.on('error', function(err){
 // initialize app
 const app = express();
 var User = require("./modelclasses/users");
+var Encounter = require("./modelclasses/encounter");
 //const pug = require('pug');
 //set vieww
 app.set("view engine", "pug");
@@ -91,7 +95,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: false }));
 
 // Use the session middleware
-app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }}));
+app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 6000000 }}));
 
 
 
@@ -104,39 +108,48 @@ app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist'));
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist'));
 app.use('/popper', express.static(__dirname + '/node_modules/popper.js/dist'));
 app.use('/pickerjs', express.static(__dirname + '/node_modules/pickerjs/dist'));
+app.use('/leafletrouting', express.static(__dirname + '/node_modules/leaflet-routing-machine/dist'));
+app.use('/lineintersect', express.static(__dirname + 'node_module/@turf/turf/turf.min.js'));
 
 //get the scripts
-app.use("/routesLeafletjs", express.static(__dirname + '/scripts/routesLeaflet.js'))
-app.use("/createroutesLeafletjs", express.static(__dirname + '/scripts/createrouteleaflet.js'))
+app.use("/routesLeafletjs", express.static(__dirname + '/scripts/routesLeaflet.js'));
+app.use("/createroutesLeafletjs", express.static(__dirname + '/scripts/createrouteleaflet.js'));
+app.use("/insidemap", express.static(__dirname + '/scripts/insidemap.js'));
+app.use("/encleaflet", express.static(__dirname + '/scripts/encleaflet.js'));
 // set the options for session user!
 app.get('*', function(req, res, next){
   console.log('requested  username =  ' + req.session.user);
+  Encounter.find({}, function(err, encounts){
+      req.session.encounters = encounts;
+      console.log('************************1' + req.session.encounters);
 
+
+  console.log('************************2' + req.session.encounters);
   //get weahter of a point
-  request("http://api.openweathermap.org/data/2.5/weather?lat=52&lon=8&APPID=49e63892630375f074577a227926d976", function(error, response, body){
+  /*request("http://api.openweathermap.org/data/2.5/weather?lat=52&lon=8&APPID=49e63892630375f074577a227926d976", function(error, response, body){
 
     console.log('error:', error); // Print the error if one occurred
     console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
     console.log('body:', body); // Print the HTML for the Google homepage
   });
-
+*/
 
   res.locals.user = req.session.user || null;
-  res.locals.userroutes = req.session.routes || null;
+  res.locals.userroutes = req.session.routes || [];
   res.locals.weather = null;
   //res.locals.userroutes = req.session.routes || null;
-  console.log('res.locals.user =  ' + app.locals.user);
 
   if(res.locals.user != null){
         User.findOne({ name: res.locals.user }, function (err, user) {
         res.locals.userroutes = user.routes;
-        console.log('res.locals.userroutes =  ' + res.locals.userroutes.length);
+
       });
 
   }
 
   console.log('req.method:  ' + req.method + ' | req path: ' +  req.path + ' | req.params: ' + req.params);
   next();
+  });
 });
 
 
@@ -157,13 +170,18 @@ app.get("/", function(req, res, next) {
 app.get("/routes", function(req, res, next) {
   res.render("leafletcreateroute");
 });
+
 app.get("/meetings", function(req, res, next){
-  res.render("leafletmeetings")
+  /*Encounter.find({}, function(err, encounts){
+      res.locals.encounters = encounts;
+  });*/
+  res.locals.encounters = req.session.encounters
+  res.render("leafletmeetings");
 });
 
 //pls REMOOOVEVEEVEVE
 //app.get("/", (req, res) => { res.sendFile(__dirname + "/index.html"); });
-app.get("/newworld", (req, res) => { res.sendFile(__dirname + "/leaflet.html"); });
+//app.get("/newworld", (req, res) => { res.sendFile(__dirname + "/leaflet.html"); });
 app.get("/helloworld", (req, res) => res.send("Hello World!"));
 
 

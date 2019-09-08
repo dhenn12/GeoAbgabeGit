@@ -51,11 +51,12 @@ var loginUser = function(req, res, next) {
     } else{
       req.session.user = user.name;
       if(user.routes != null){
+
         req.session.routes = user.routes;
       } else {
         req.session.routes = [];
       }
-      req.session.routeslength = req.session.routes.length; 
+      req.session.routeslength = req.session.routes.length;
       console.log("req.session.user in loginUser: " + req.session.routeslength);
       res.redirect("/");
       //next();

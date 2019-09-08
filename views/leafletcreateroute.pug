@@ -1,7 +1,7 @@
 extends leaflet
 
 block routeoptions
-  
+
   form(method="POST" action="/routes/addroute")
     #form-group
       label Starttime:
@@ -9,7 +9,7 @@ block routeoptions
       label Endtime:
       input.form-control(name="endtime", type="text", id="endtime_input")
       label Route:
-      input.form-control(name="waypoints", type="text")
+      textarea.form-control(name="waypoints")
     input.btn.btn-primary(type='submit', value='Submit')
   script(src="/createroutesLeafletjs")
       
