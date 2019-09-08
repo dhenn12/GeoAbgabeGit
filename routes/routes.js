@@ -163,9 +163,15 @@ var addRoute = function(req, res, next){
     });
 
     //search routes and look if there is an encounter?
-    Route.find({}, function (err, routes) {
-
-      console.log(routes)
+    User.find({},'routes', function (err, users) {
+      //extract routes from users
+      var routes = []
+      for(let i = 0; i<users.length;i++){
+        let user = users[i];
+        for(let j = 0; j<user.routes.length;j++){
+          routes.push(user.routes[j])
+        } //freezes after this point..
+      }
 
       //prepare newRoute data to be used with findEncounter
       let newrouteGeoJSON = JSON.parse(geoJSONtemplate);
@@ -181,10 +187,7 @@ var addRoute = function(req, res, next){
         console.log(JSON.parse(routes[z].waypoints[0]))
 
         var encounter = findEncounter(newrouteGeoJSON, routeZGeoJSON, 500);
-        console.log(encounter)
         var encPoints = encounter.intersects.features;
-        console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-        console.log(encPoints)
 
         console.log("Intersection Points :::  " + encPoints);
         if(encPoints.length > 0){
