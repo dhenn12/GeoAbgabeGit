@@ -7,7 +7,7 @@ block routeoptions
   if values != null
     ul.list-group
       each val in values
-        li.list-group-item=  " Starttime:  " + val.starttime + "   Endtime: " + val.endtime + "   Route: " + val.waypoints
+        li.list-group-item=  " Starttime:  " + val.starttime + "   Endtime: " + val.endtime
           br
           br
           - var z = JSON.stringify(values[counter].waypoints);
