@@ -311,10 +311,16 @@ function findEncounter(route1, route2, tolerance){
   return closestEncounter;
 }
 
-//express route control
-router.get("/showroute/:number", showRoute);
+var shareEncounter = function(req, res, next){
+  Encounter.findOne({ _id: req.params._id}, function(err, enc){
+    req.session.shared = enc;
+    res.redirect("/routes/sharerouteff/" + enc._id);
+  });
+};
+
+router.get("/sharerouteff/:_id", function(req, res, next) {res.render('leafletextra');});
 router.get("/deleteroute/:number", deleteRoute);
-router.get("/shareroute/:number", shareRoute);
+router.get("/shareroute/:_id", shareEncounter);
 router.post("/addroute", addRoute);
 
 router.get('/administrateroute', administrateroute);

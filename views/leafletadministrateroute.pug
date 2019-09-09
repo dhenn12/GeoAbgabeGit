@@ -12,8 +12,7 @@ block routeoptions
           br
           - var z = JSON.stringify(values[counter].waypoints);
           a.btn.btn-primary.btn-md.active(type="submit", href="/routes/deleteroute/" + counter) DELETE
-          a.btn.btn-primary.btn-md.active(type="submit", href="/routes/showroute/" + counter) Show Route
-          button.btn.btn-primary.btn-md.active(onclick='createRoute("mapdiv", ' + z + ')') Clickme
+          button.btn.btn-primary.btn-md.active(onclick='createRoute("mapdiv", ' + z + ')') show Route
           - counter++
   else
     - var values = userroutes;

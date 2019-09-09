@@ -92,7 +92,7 @@ function displayUserMap(){
 
 /**
 * @function updateMapPosition
-* @desc pans the map to a new position. from fnieb's assignment 5
+* @desc pans the map to a new position
 * @param route the route to whose center the map pans
 */
 function updateMapPosition(route){
@@ -109,6 +109,7 @@ function updateMapPosition(route){
   //map.panTo(point[0],point[1]);
   map.setView(pointLatLng, 11, {animation: true})
 }
+
 
 /**
 * @function removeShape

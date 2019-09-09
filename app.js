@@ -118,13 +118,15 @@ app.use("/routesLeafletjs", express.static(__dirname + '/scripts/routesLeaflet.j
 app.use("/createroutesLeafletjs", express.static(__dirname + '/scripts/createrouteleaflet.js'));
 app.use("/insidemap", express.static(__dirname + '/scripts/insidemap.js'));
 app.use("/encleaflet", express.static(__dirname + '/scripts/encleaflet.js'));
+app.use("/share", express.static(__dirname + '/scripts/share.js'));
+
 
 // set the options for session user!
 //important for the client side!
 app.get('*', function(req, res, next){
   Encounter.find({}, function(err, encounts){
   req.session.encounters = encounts;
-
+  res.locals.shared = req.session.shared || null;
   //get weahter of a point
 
 

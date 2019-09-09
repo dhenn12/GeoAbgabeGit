@@ -1,0 +1,7 @@
+extends leaflet
+
+block extra
+  script(src="/share")
+  - var singleEnc = JSON.stringify(shared)
+  button.btn-primary.btn-md.active(onclick='encShared(' + singleEnc + ')') Clickme
+  //- button= encShared;
