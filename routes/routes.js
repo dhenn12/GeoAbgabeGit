@@ -107,9 +107,7 @@ var addRoute = function(req, res, next){
 
     res.redirect("/routes/administrateroute");
   } else {
-    console.log("route not valid");
-    //This client alert can use some polishing
-    return res.status(401).end('route is not valid. please enter your route in the format: [[lon1,lat1],[lon2,lat2],...,[lonn, latn]]');
+    res.render("leafletcreaterouteERR", { error_message: "invalid input" });
   }
 
 };
@@ -200,7 +198,9 @@ function parseArrayString(inputString){
   var cantInclude = [",","\"","\'",")","(","$","\\","/","!"];
   //foreign code,
   if(inputString == "" || inputString == null){
+
     throw new Error("input string contains no 2d array");
+
   }
   //check for illegal characters.
   else if (checkIllegalChars(inputString)){
