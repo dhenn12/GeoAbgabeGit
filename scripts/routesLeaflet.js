@@ -63,7 +63,7 @@ function createRoute(mapdiv, inputCoords){
   //create a leaflet object from the given coordinates and colors
   var newRoute = new L.GeoJSON(geoJSON);
   newRoute._id = id;
-
+  newRoute.bindPopup("the coordinates are: " +  JSON.stringify(geoJSON.features[0].geometry.coordinates));
   //add the shape to the map and the shape array.
   map.addLayer(newRoute);
   shapes.push(newRoute);
@@ -74,7 +74,6 @@ function createRoute(mapdiv, inputCoords){
 * @desc gets called when the form updates and displays the entered geoJSON in the map
 */
 function displayUserMap(){
-  console.log("inserting Map")
   var geoJson = JSON.parse(geoJSONtemplate);
   var input = $('#waypoints_input').val();
 

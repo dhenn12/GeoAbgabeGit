@@ -30,12 +30,7 @@
 // http require
 //const processenv = require('processenv');
 
-/*request("http://api.openweathermap.org/data/2.5/weather?lat=52&lon=8&APPID=49e63892630375f074577a227926d976", function(error, response, body){
-
-  console.log('error:', error); // Print the error if one occurred
-  console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-  console.log('body:', body); // Print the HTML for the Google homepage
-});
+/*
 */
 // alot of example scripts : https://github.com/bradtraversy/nodekb
 const http = require('http');
@@ -83,7 +78,7 @@ app.set("view engine", "pug");
 //
 
 
-//"http://api.openweathermap.org/data/2.5/weather?lat=52&lon=8&APPID=49e63892630375f074577a227926d976"
+
 
 
 
@@ -128,8 +123,19 @@ app.get('*', function(req, res, next){
   req.session.encounters = encounts;
   res.locals.shared = req.session.shared || null;
   //get weahter of a point
+  /*if(res.locals.shared != null){
+    var lat = res.locals.shared.coords[0].geometry.coordinates[1];
+    var long = res.locals.shared.coords[0].geometry.coordinates[0];
+  //"http://api.openweathermap.org/data/2.5/weather?lat=52&lon=8&APPID=49e63892630375f074577a227926d976"
+  request("http://api.openweathermap.org/data/2.5/weather?lat=" + lat +"&lon=" +long+ "&APPID=49e63892630375f074577a227926d976", function(error, response, body){
 
-
+    console.log('error:', error); // Print the error if one occurred
+    console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+    console.log('body:', body);
+    console.log('body1:', JSON.parse(body).weather[0].main); // Print the HTML for the Google homepage
+    res.locals.weather = JSON.parse(body).weather[0].main;
+  });
+}*/
   res.locals.user = req.session.user || null;
   res.locals.userroutes = req.session.routes || [];
   res.locals.weather = null;
