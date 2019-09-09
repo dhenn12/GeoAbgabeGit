@@ -15,14 +15,18 @@ router.get("/", function(req, res, next) {
 });
 
 
-/*
-* for registration of users if user already exists
-* sends it an error message to the registration page
+/**
+* @function registerUser
+* @desc username required for registrating
+*       new user will be created and commited, if the given username is not in user
+* @redirect to main page
 */
 var registerUser = function(req, res) {
+  //find possible userswho already have the username
     User.findOne({ name: req.body.user_name }, 'name',  function (err, user) {
       console.log('findone()  ' +  user);
       if(user == null){
+        // create new user
         let newuser = new User();
         newuser.name = req.body.user_name;
         newuser.routes = [];
@@ -41,8 +45,11 @@ var registerUser = function(req, res) {
 };
 
 
-// login for users finding the username
-// change db.currentUser to this user
+/**
+* @function loginUser
+* @desc user will getting logged in if the given username exists
+* @redirect to main page
+*/
 var loginUser = function(req, res, next) {
   User.findOne({ name: req.body.user_name },  function (err, user) {
     console.log('findone()  ' +  user);
@@ -64,6 +71,11 @@ var loginUser = function(req, res, next) {
   });
 };
 
+/**
+* @function logoutUser
+* @desc logging out the user b setting session options back to null
+* @redirect to main page
+*/
 var logoutUser = function(req, res, next){
   req.session.user = null;
   req.session.routes = null;
@@ -72,6 +84,7 @@ var logoutUser = function(req, res, next){
 };
 
 
+// express routing controll
 router.post("/loginuser", loginUser);
 router.get("/logoutuser", logoutUser);
 router.post("/registerUser", registerUser);
