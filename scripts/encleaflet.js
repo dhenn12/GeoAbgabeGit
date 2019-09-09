@@ -6,7 +6,3 @@ function showEnc(mapdiv, array){
 
   }
 }
-/*
-function showEnc(){
-    L.marker([51, 7]).bindPopup('user1 : ').addTo(map);
-}*/

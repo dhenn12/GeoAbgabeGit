@@ -9,7 +9,7 @@ block routeoptions
       label Endtime:
       input.form-control(name="endtime", type="text", id="endtime_input")
       label Route:
-      textarea.form-control(name="waypoints")
+      textarea.form-control(name="waypoints", id="waypoints_input", onchange="displayUserMap();")
     input.btn.btn-primary(type='submit', value='Submit')
   script(src="/createroutesLeafletjs")
       

@@ -118,7 +118,7 @@ app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist')
 app.use('/popper', express.static(__dirname + '/node_modules/popper.js/dist'));
 app.use('/pickerjs', express.static(__dirname + '/node_modules/pickerjs/dist'));
 app.use('/leafletrouting', express.static(__dirname + '/node_modules/leaflet-routing-machine/dist'));
-app.use('/lineintersect', express.static(__dirname + 'node_module/@turf/turf/turf.min.js'));
+app.use('/turf', express.static(__dirname + '/node_modules/@turf/turf'));
 
 //get the scripts
 app.use("/routesLeafletjs", express.static(__dirname + '/scripts/routesLeaflet.js'));

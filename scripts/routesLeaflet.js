@@ -89,20 +89,43 @@ function createRoute(mapdiv, inputCoords){
 * @author f_nieb02@uni-muenster.de
 */
 function displayUserMap(){
-  var input = $('#routeGeoJSONInput').val();
+  console.log("inserting Map")
+  var geoJson = JSON.parse(geoJSONtemplate);
+  var input = $('#waypoints_input').val();
 
   //parse the text inputCoords
   input = $.trim(input);
 
   try{
-    input = JSON.parse(input);
     removeShape(map, 0);
     createRoute(map, input);
+    input = JSON.parse(input);
+    geoJson.features[0].geometry.coordinates = input;
+    updateMapPosition(geoJson);
   } catch(error) {
-    console.log(error);
-    console.log(input);
-    //and pretend nothing happened
+    console.log(error)
+    //pretend nothing happened
   }
+}
+
+/**
+* @function updateMapPosition
+* @desc pans the map to a new position. from fnieb's assignment 5
+* @param route the route to whose center the map pans
+*/
+function updateMapPosition(route){
+  //variable Declarations
+  var point;
+  var pointLatLng;
+  console.log(route)
+
+  //function body
+  point = turf.centerOfMass(route);
+  point = point.geometry.coordinates;
+  console.log(point)
+  pointLatLng = L.latLng(point[1], point[0]);
+  //map.panTo(point[0],point[1]);
+  map.setView(pointLatLng, 11, {animation: true})
 }
 
 /**
