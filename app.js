@@ -57,12 +57,12 @@ const request = require("request");
 //const turf = require('@turf');
 //initialize mongoose connection
 mongoose.connect('mongodb://mongo:27017/mydb', {useNewUrlParser: true}, function(err){
-  console.log(err);
+  //console.log(err);
   console.log("no mongo-container, attempting to connect to localhost:27017");
 
   //try to connect to localhost if there is no mongo container
   mongoose.connect('mongodb://localhost:27017/mydb', {useNewUrlParser: true}, function(err1){
-    console.log(err1);
+    //console.log(err1);
   });
 });
 
@@ -127,13 +127,9 @@ app.use("/insidemap", express.static(__dirname + '/scripts/insidemap.js'));
 app.use("/encleaflet", express.static(__dirname + '/scripts/encleaflet.js'));
 // set the options for session user!
 app.get('*', function(req, res, next){
-  console.log('requested  username =  ' + req.session.user);
   Encounter.find({}, function(err, encounts){
-      req.session.encounters = encounts;
-      console.log('************************1' + req.session.encounters);
+  req.session.encounters = encounts;
 
-
-  console.log('************************2' + req.session.encounters);
   //get weahter of a point
   /*request("http://api.openweathermap.org/data/2.5/weather?lat=52&lon=8&APPID=49e63892630375f074577a227926d976", function(error, response, body){
 
