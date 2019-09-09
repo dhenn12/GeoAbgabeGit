@@ -1,8 +1,12 @@
 extends leaflet
 
 block routeoptions
-
+  center
+    a please enter your route in the following format: [[lat1,lon1],[lat2,lon2], ... ,[latZ,lonZ]]
+  br
   form(method="POST" action="/routes/addroute")
+    
+    br
     #form-group
       label Starttime:
       input.form-control(name="starttime", type="text", id="starttime_input")
