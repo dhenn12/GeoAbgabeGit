@@ -1,0 +1,11 @@
+extends leaflet
+
+block routeoptions
+  
+  - var enc = JSON.stringify(encounters)
+  - console.log("eeeeeeeeeeeeeeeeeeeeee" + enc.length)
+  button.btn-primary.btn-md.active(onclick='showEnc("mapdiv", ' + enc + ')') Clickme
+  //- button.btn-primary.btn-md.active(onclick='showEnc()') Clickme
+  script(src="/encleaflet")
+  //- showEnc(mapdiv, encounters);
+      
