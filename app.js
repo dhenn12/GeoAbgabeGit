@@ -126,8 +126,8 @@ app.get('*', function(req, res, next){
   /*if(res.locals.shared != null){
     var lat = res.locals.shared.coords[0].geometry.coordinates[1];
     var long = res.locals.shared.coords[0].geometry.coordinates[0];
-  //"http://api.openweathermap.org/data/2.5/weather?lat=52&lon=8&APPID=49e63892630375f074577a227926d976"
-  request("http://api.openweathermap.org/data/2.5/weather?lat=" + lat +"&lon=" +long+ "&APPID=49e63892630375f074577a227926d976", function(error, response, body){
+  //"http://api.openweathermap.org/data/2.5/weather?lat=52&lon=8&APPID=[key]"
+  request("http://api.openweathermap.org/data/2.5/weather?lat=" + lat +"&lon=" +long+ "&APPID=[key]", function(error, response, body){
 
     console.log('error:', error); // Print the error if one occurred
     console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
