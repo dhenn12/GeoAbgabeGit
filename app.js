@@ -147,7 +147,10 @@ app.get('*', function(req, res, next){
 });
 
 
-
+//make tests available
+app.use("/tests", express.static(__dirname + '/tests/functiontests.html'));
+app.use("/functions.js", express.static(__dirname + '/tests/functions.js'));
+app.use("/functionTests.js", express.static(__dirname + '/tests/functionTests.js'));
 
 
 // import routes Routers for use
