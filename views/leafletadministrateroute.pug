@@ -7,13 +7,14 @@ block routeoptions
   if values != null
     ul.list-group
       each val in values
-        li.list-group-item=  " Starttime:  " + val.starttime + "   Endtime: " + val.endtime
-          br
-          br
-          - var z = JSON.stringify(values[counter].waypoints);
-          a.btn.btn-primary.btn-md.active(type="submit", href="/routes/deleteroute/" + counter) DELETE
-          button.btn.btn-primary.btn-md.active(onclick='createRoute("mapdiv", ' + z + ')') show Route
-          - counter++
+        center  
+          li.list-group-item=  "     Starttime:  " + val.starttime + "     Endtime: " + val.endtime 
+            br
+            br
+            - var z = JSON.stringify(values[counter].waypoints);
+            a.btn.btn-block.btn-danger.btn-md.active(type="submit", href="/routes/deleteroute/" + counter) delete Route
+            button.btn.btn-block.btn-primary.btn-md.active(onclick='createRoute("mapdiv", ' + z + ')') show Route
+            - counter++
   else
     - var values = userroutes;
     div we are in trouble
