@@ -1,7 +1,8 @@
 .gitignore
 node_modules
 npm-debug.log
-mongo-data
 exampledata*.rar
 *debug.log
 functions
+data
+exampleData
