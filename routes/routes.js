@@ -9,6 +9,7 @@ var router = express.Router();
 var Route = require("../modelclasses/routes");
 var User = require("../modelclasses/users");
 var Encounter = require("../modelclasses/encounter");
+// requirements for turf
 const Intersect = require('@turf/line-intersect');
 const turf = require('@turf/turf');
 //var Segment = require('../node_modules/@turf/line-segment');
@@ -16,11 +17,12 @@ const turf = require('@turf/turf');
 //geoJSON template to be used when there is a geoJSON to create
 const geoJSONtemplate = '{ "type": "FeatureCollection", "features": [{"type": "Feature","properties": {},"geometry": {"type": "LineString","coordinates": []}}]}';
 
-/* GET users listing. */
+// calls leafletcreateroute
 router.get("/createroute", function(req, res, next) {
   res.render("leafletcreateroute");
 });
 
+// calls leafletadministroute
 var administrateroute = function(req, res, next){
   //console.log("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE" + res.locals.userroutes.length);
   res.render("leafletadministrateroute");

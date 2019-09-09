@@ -1,27 +1,21 @@
 // jshint esversion: 6
 
-//set div(id=mapdiv) to same width and height like div(id=map)
-/*var mapheight= $( "#map" ).height();
-var mapwidth = $( "#map" ).width();
-console.log("height = " + mapheight + " width = " + mapwidth);
-//$("#mapdiv").height(600);
-//$("#mapdiv").width(600);
 
-console.log($( "#map" )[0].innerHTML);
-
-*/
-
+// template for turf
 const geoJSONtemplate = '{ "type": "FeatureCollection", "features": [{"type": "Feature","properties": {},"geometry": {"type": "LineString","coordinates": []}}]}';
 
-const start_latlng = [52, 9];
+//long lat in map center
+const start_latlng = [0 ,0];
 //var mapsec = $( "#mapdiv" )[0]
 var map = L.map(mapdiv, {
   center: start_latlng,
-}).fitWorld();
+  zoom: 2
+});
 
 //var shapes, used to keep track of the shapes on the map with their IDs
 var shapes = [];
 
+// create main layer
 var osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 13,
   attribution: 'Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors',
@@ -32,26 +26,17 @@ var osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 
 var baseMaps = {
   "osm": osm,
+
 };
 
-
+// add Layers to map
 L.control.layers(baseMaps).addTo(map);
 
 
 
 
 
-/*
-L.DomEvent.on(startBtn, 'click', function() {
-       control.spliceWaypoints(0, 1, e.latlng);
-       map1.closePopup();
-   });
 
-L.DomEvent.on(destBtn, 'click', function() {
-    control.spliceWaypoints(control.getWaypoints().length - 1, 1, e.latlng);
-    map1.closePopup();
-  });
-  */
 /**
 * @function createRoute
 * @desc function that adds a given shape to the map.
@@ -59,7 +44,6 @@ L.DomEvent.on(destBtn, 'click', function() {
 * BE SURE TO HAVE A GLOBAL VARIABLE shapes DECLARED AS AN ARRAY
 * @param map the map id of the map
 * @param inputCoords the GeoJSON of the shape to be added to the map
-* @author f_nieb02@uni-muenster.de
 */
 function createRoute(mapdiv, inputCoords){
   var id;
@@ -85,7 +69,6 @@ function createRoute(mapdiv, inputCoords){
 /**
 * @function displayUserMap
 * @desc gets called when the form updates and displays the entered geoJSON in the map
-* @author f_nieb02@uni-muenster.de
 */
 function displayUserMap(){
   console.log("inserting Map")
@@ -130,7 +113,6 @@ function updateMapPosition(route){
 /**
 * @function removeShape
 * @desc function to remove a given shape object from a given map
-* @author f_nieb02@uni-muenster.de
 */
 function removeShape(map, id){
   var new_shapes = [];
@@ -145,8 +127,6 @@ function removeShape(map, id){
 * @function swapLatLon
 * @param coords coordinate tuple to swap the entries of, or Array of coordinate tuples
 * @desc calls itself recursively on an array of coordinates until it reaches a coordinate tuple for which it then swaps the two entries.
-* @author f_nieb02@uni-muenster.de
-* CURRENTLY NOT USED. REMOVE IF IT KEEPS BEING NOT USED
 */
 function swapLatLon(coords){
   //look deeper if it appears to be an array of coordinates, call yourself recursively
