@@ -17,8 +17,7 @@ const start_latlng = [52, 9];
 //var mapsec = $( "#mapdiv" )[0]
 var map = L.map(mapdiv, {
   center: start_latlng,
-  zoom: 12
-});
+}).fitWorld();
 
 //var shapes, used to keep track of the shapes on the map with their IDs
 var shapes = [];

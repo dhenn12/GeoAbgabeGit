@@ -10,6 +10,12 @@ let encounterSchema = mongoose.Schema({
   },
   coords:{
     type: Array
+  },
+  route1ID:{
+    type: String
+  },
+  route2ID:{
+    type: String
   }
 });
 
