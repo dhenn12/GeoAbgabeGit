@@ -47,7 +47,7 @@ var loginUser = function(req, res, next) {
   User.findOne({ name: req.body.user_name },  function (err, user) {
     console.log('findone()  ' +  user);
     if(user == null){
-      res.render("loginErr", { error_message: " non existing username" });
+      res.render("loginERR", { error_message: " non existing username" });
     } else{
       req.session.user = user.name;
       if(user.routes != null){
