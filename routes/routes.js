@@ -26,108 +26,6 @@ var administrateroute = function(req, res, next){
   res.render("leafletadministrateroute");
 };
 
-//https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
-function onSegment(p, q, r){
-  if (q[0]<= Math.max(p[0], r[0]) && q[0] >= Math.min(p[0], r[0]) &&
-      q[1] <= Math.max(p[1], r[1]) && q[1] >= Math.min(p[1], r[1])){
-        console.log("trueeeeeeee");
-      return true;}
-
-    return true;
-}
-
-//https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
-function orientation(p, q, r){
-   var val = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1]);
-
-    if (val == 0) return 0; // colinear
-
-    return (val > 0)? 1: 2; // clock or counterclock wis
-}
-
-//find intersections between 2 routes
-function intersections(array1, array2){
-  var intersectionPoints = [];
-  console.log("in intersections array1: " + array1  + "   array2: " + array2);
-  for(var i = 0; i < (array1.length - 1); i++){
-
-    console.log("in intersections for1");
-    for(var j = 0; j < (array2.length - 1); j++){
-    /*let poi = findIntersection(array1[i], array1[i + 1], array2[j], array2[j + 1]);
-    if(poi != 0){
-      intersectionPoints.push(poi);
-    }*/
-    console.log("in intersections for2");
-    var o1 = orientation(array1[i], array1[i + 1], array2[j]);
-    var o2 = orientation(array1[i], array1[j], array2[j + 1]);
-    var o3 = orientation(array1[i + 1], array2[j + 1], array1[i]);
-    var o4 = orientation(array1[i + 1], array2[j +1], array2[j]);
-
-    // General case
-    if (o1 != o2 && o3 != o4){
-      console.log("SUCESSS");
-      let poi = findIntersection(array1[i], array1[i + 1], array2[j], array2[j + 1]);
-      if(poi != 0){
-        intersectionPoints.push(poi);
-                //console.log("in intersections for2");
-        }
-      } else if (o1 == 0 && onSegment(array1[i], array2[j], array1[i + 1])){
-        console.log("SUCESSS");
-      let poi = findIntersection(array1[i], array1[i + 1], array2[j], array2[j + 1]);
-      if(poi != 0){
-        intersectionPoints.push(poi);
-        }
-      }else if (o2 == 0 && onSegment(array1[i], array2[j + 1], array1[i + 1])){
-        console.log("SUCESSS");
-      let poi = findIntersection(array1[i], array1[i + 1], array2[j], array2[j + 1]);
-      if(poi != 0){
-        intersectionPoints.push(poi);
-        }
-      }else if (o3 == 0 && onSegment(array2[j], array1[i], array2[j + 1])){
-        console.log("SUCESSS");
-      let poi = findIntersection(array1[i], array1[i + 1], array2[j], array2[j + 1]);
-      if(poi != 0){
-        intersectionPoints.push(poi);
-        }
-      }else if (o4 == 0 && onSegment(array2[j], array1[i + 1], array2[j + 1])){
-        console.log("SUCESSS");
-      let poi = findIntersection(array1[i], array1[i + 1], array2[j], array2[j + 1]);
-      if(poi != 0){
-        intersectionPoints.push(poi);
-        }
-      }
-
-    }
-  }
-  return intersectionPoints;
-}
-
-
-//find intersection between two Lines
-// https://www.geeksforgeeks.org/program-for-point-of-intersection-of-two-lines/
-function findIntersection(pointAx, pointAy, pointBx, pointBy){
-    var a1 = pointAy[1] - pointAx[1];
-    var b1 = pointAx[0] - pointAy[0];
-    var c1 = a1*pointAx[0] + b1 * pointAx[1];
-
-    var a2 = pointBy[1] - pointBx[1];
-    var b2 = pointBx[0] - pointBy[0];
-    var c2 = a2*pointBx[0] + b2 * pointBx[1];
-    var z = 0;
-    var det = a1*b2 - a2*b1;
-
-    if(det != 0) {
-      var x = (b2*c1 - b1*c2)/det;
-      var y = (a1*c2 - a2*c1)/det;
-
-      z = [x, y];
-    }
-    console.log("tzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz" + z);
-    //console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz" + z);
-    return z;
-}
-
-
 var addRoute = function(req, res, next){
   //create new RouteObj
   let newRoute = new Route();
@@ -170,7 +68,7 @@ var addRoute = function(req, res, next){
         let user = users[i];
         for(let j = 0; j<user.routes.length;j++){
           routes.push(user.routes[j])
-        } //freezes after this point..
+        }
       }
 
       //prepare newRoute data to be used with findEncounter
