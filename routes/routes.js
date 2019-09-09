@@ -178,11 +178,20 @@ var showRoute = function(req, res, next){
 * If the string contains several coordinate array it only returns the first one.
 * @param inputString the string that represents a 2-dimensional array to be parsed. formatting: [[lon,lat], ... ,[lon,lat]]
 * @returns array of coordinates if this is what the string represents. exception if otherwise
-* @author fnieb02@gmail.com
+*/
+/**
+* @function checkIllegalChars
+* @desc helping function, takes string and compares it against list of chars
+* @returns true if an illegal character is found in the string
 */
 function parseArrayString(inputString){
-  function CustomError( message ) {
-    this.message = message;
+
+  function checkIllegalChars(string){
+    cantInclude.forEach(function(e){
+      if(string.includes()){
+        return true;
+      }
+    });
   }
   //first, match only the text between the square brackets
   inputString = inputString.match(/\[\[.*?\]\]/);
@@ -193,8 +202,8 @@ function parseArrayString(inputString){
   if(inputString == "" || inputString == null){
     throw new Error("input string contains no 2d array");
   }
-  //check for illegal characters. function call based on https://stackoverflow.com/a/43615512 by user "dinigo"
-  else if (cantInclude.some(function(el){inputString.includes(el);})){
+  //check for illegal characters.
+  else if (checkIllegalChars(inputString)){
     throw new Error("input string contains illegal characters");
   }
   //everything is okay. use JSON.parse

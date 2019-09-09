@@ -52,12 +52,10 @@ const request = require("request");
 
 //initialize mongoose connection
 mongoose.connect('mongodb://mongo:27017/mydb', {useNewUrlParser: true}, function(err){
-  //console.log(err);
   console.log("no mongo-container, attempting to connect to localhost:27017");
 
   //try to connect to localhost if there is no mongo container
   mongoose.connect('mongodb://localhost:27017/mydb', {useNewUrlParser: true}, function(err1){
-    //console.log(err1);
   });
 });
 
