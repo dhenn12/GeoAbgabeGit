@@ -49,6 +49,9 @@ function createRoute(mapdiv, inputCoords){
   var id;
   var geoJSON = JSON.parse(geoJSONtemplate);
   inputCoords = JSON.parse(inputCoords);
+  //flip the coordinates to fit geoJSON
+  inputCoords = swapLatLon(inputCoords)
+
   //parse the stringified array from mongoose once again...
   //inputCoords = JSON.parse(inputCoords)
   geoJSON.features[0].geometry.coordinates = inputCoords;
@@ -104,8 +107,7 @@ function updateMapPosition(route){
   //function body
   point = turf.centerOfMass(route);
   point = point.geometry.coordinates;
-  console.log(point)
-  pointLatLng = L.latLng(point[1], point[0]);
+  pointLatLng = L.latLng(point[0], point[1]);
   //map.panTo(point[0],point[1]);
   map.setView(pointLatLng, 11, {animation: true})
 }
