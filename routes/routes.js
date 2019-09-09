@@ -28,12 +28,19 @@ var administrateroute = function(req, res, next){
   res.render("leafletadministrateroute");
 };
 
-
+/**
+* @function addRoute
+* @desc adding route to the database and the current session user
++       furthermore it will check in the dbs for possible encounters resulting from adding the route to the database
+* @redirect to administrate Routes
+*/
 var addRoute = function(req, res, next){
   //create new RouteObj
   let newRoute = new Route();
   var inputRoute = false;
-
+  if(req.session.user == null){
+    res.render("leafletcreaterouteERR", { error_message: "Please login before adding routes" });
+  }
   //check user input
   try{
     inputRoute = parseArrayString(req.body.waypoints);
@@ -56,6 +63,8 @@ var addRoute = function(req, res, next){
     req.session.routes.push(newRoute);
     newRoute.save(function(err){});
     //save the route in the db for later uses for example after login or reload
+
+    // find the right user to add the route and updating the
     User.findOne({ name: req.session.user }, function (err, user) {
       user.routes.push(newRoute);
       console.log(user.routes.length);
@@ -87,10 +96,11 @@ var addRoute = function(req, res, next){
         routeZGeoJSON.features[0].geometry.coordinates = JSON.parse(routes[z].waypoints[0]);
         console.log(JSON.parse(routes[z].waypoints[0]))
 
+
         var encounter = findEncounter(newrouteGeoJSON, routeZGeoJSON, 500);
         var encPoints = encounter.intersects.features;
 
-
+        //adding new Encounter
         if(encPoints.length > 0){
           for(var c= 0; c < encPoints.length; c++){
             let newEncounter = new Encounter();
@@ -112,6 +122,7 @@ var addRoute = function(req, res, next){
 
 };
 
+/*
 var shareRoute = function(req, res, next){
   console.log("IMPIMPIMPIMPIMP21321 " + req.params.number);
   User.findOne({ name: req.session.user }, function (err, user) {
@@ -130,7 +141,14 @@ var shareRoute = function(req, res, next){
   });
   res.redirect("/routes/administrateroute");
 };
+*/
 
+/**
+* @function deleteRoute
+* @desc deletes the chosen Route, deletes the user from db routes and userroutes
+*       furthermore deletes route from user and associated encounters of the route  will be deleted
+* @redirect to administrate Routes
+*/
 var deleteRoute = function(req, res, next) {
 
   //delete the route in the db
@@ -142,6 +160,7 @@ var deleteRoute = function(req, res, next) {
       if (err) return handleError(err);
       //
     });
+    //all encounters associated to this route getting deleted
     Encounter.deleteMany({ route1ID: routeId}, function (err) {
     if (err) return handleError(err);
     // deleted at most one tank document
@@ -151,7 +170,7 @@ var deleteRoute = function(req, res, next) {
     if (err) return handleError(err);
     // deleted at most one tank document
     });
-
+    //
     user.routes.splice(req.params.number, 1);
     user.save(function(err){});
 
@@ -159,15 +178,12 @@ var deleteRoute = function(req, res, next) {
 
 
   });
-  //delete current session routes
+  //delete current session route
   req.session.routes.splice(req.params.number, 1);
   res.redirect("/routes/administrateroute");
 };
 
 
-var showRoute = function(req, res, next){
-  //LeafletScript.createRoute("mapdiv", req.session.routes[req.params.number]);
-};
 
 /**
 * @function parseArrayString
@@ -295,6 +311,7 @@ function findEncounter(route1, route2, tolerance){
   return closestEncounter;
 }
 
+//express route control
 router.get("/showroute/:number", showRoute);
 router.get("/deleteroute/:number", deleteRoute);
 router.get("/shareroute/:number", shareRoute);
