@@ -17,7 +17,7 @@
     "leaflet": "^1.5.1",
     "leaflet-routing-machine": "^3.2.12",
     "mongodb": "^3.3.0",
-    "mongoose": "^5.6.11",
+    "mongoose": "^5.7.5",
     "picker": "^0.1.4",
     "pickerjs": "^1.2.1",
     "popper.js": "^1.15.0",
