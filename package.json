@@ -22,7 +22,7 @@
     "pickerjs": "^1.2.1",
     "popper.js": "^1.15.0",
     "processenv": "^1.1.0",
-    "pug": "^2.0.4",
+    "pug": "^3.0.1",
     "request": "^2.88.0"
   },
   "devDependencies": {},
